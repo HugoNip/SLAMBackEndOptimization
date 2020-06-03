@@ -7,12 +7,13 @@
 
 // math functions needed for rotation conversion
 
-// dot and cross production
+// dot production
 template<typename T>
 inline T DotProduct(const T x[3], const T y[3]) {
     return (x[0] * y[0] + x[1] * y[1] + x[2] * y[2]);
 }
 
+// cross production
 template<typename T>
 inline void CrossProduct(const T x[3], const T y[3], T result[3]) {
     result[0] = x[1] * y[2] - x[2] * y[1];
@@ -20,7 +21,7 @@ inline void CrossProduct(const T x[3], const T y[3], T result[3]) {
     result[2] = x[0] * y[1] - x[1] * y[0];
 }
 
-// converts from a angle axis to quaternion
+// converts from angle-axis to quaternion
 template<typename T>
 inline void AngleAxisToQuaternion(const T *angle_axis, T *quaternion) {
     const T &a0 = angle_axis[0];
@@ -43,6 +44,7 @@ inline void AngleAxisToQuaternion(const T *angle_axis, T *quaternion) {
     }
 }
 
+// converts from Quaternion to angle-axis
 template<typename T>
 inline void QuaternionToAngleAxis(const T *quaternion, T *angle_axis) {
     const T &q1 = quaternion[1];

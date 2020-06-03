@@ -34,7 +34,7 @@ void SolveBA(BALProblem &bal_problem) {
     const double *observations = bal_problem.observations();
     ceres::Problem problem;
 
-    for (int i = 0; i < bal_problem.number_observations(); ++i) {
+    for (int i = 0; i < bal_problem.num_observations(); ++i) {
         ceres::CostFunction *cost_function;
 
         // step 1: define parameter blocks (P137)
@@ -72,9 +72,9 @@ void SolveBA(BALProblem &bal_problem) {
 
     // show some information here
     std::cout << "bal problem file loaded..." << std::endl;
-    std::cout << "bal problem have " << bal_problem.num_cameras() << " camera and "
-              << bal_problem.number_points() << " points. " << std::endl;
-    std::cout << "Forming " << bal_problem.number_observations() << " observations. " << std::endl;
+    std::cout << "bal problem have " << bal_problem.num_cameras() << " cameras and "
+              << bal_problem.num_points() << " points. " << std::endl;
+    std::cout << "Forming " << bal_problem.num_observations() << " observations. " << std::endl;
 
     // configure solver
     std::cout << "Solving ceres BA ... " << std::endl;

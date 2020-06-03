@@ -14,8 +14,9 @@ struct PoseAndIntrinsics {
 
     // set from given address
     explicit PoseAndIntrinsics(double *data_addr) {
+        // R = exp(phi^)
         rotation = Sophus::SO3d::exp(
-                Eigen::Vector3d(data_addr[0], data_addr[1], data_addr[2])); // theta
+                Eigen::Vector3d(data_addr[0], data_addr[1], data_addr[2]));
         translation = Eigen::Vector3d(data_addr[3], data_addr[4], data_addr[5]);
         focal = data_addr[6];
         k1 = data_addr[7];
@@ -49,6 +50,7 @@ public:
         _estimate = PoseAndIntrinsics();
     }
 
+    // update
     virtual void oplusImpl(const double *update) override {
         _estimate.rotation = Sophus::SO3d::exp(
                 Eigen::Vector3d(update[0], update[1], update[2])) * _estimate.rotation;
@@ -60,8 +62,10 @@ public:
 
     // reprojection
     Eigen::Vector2d project(const Eigen::Vector3d &point) {
+        // p_c = Rp + t
         Eigen::Vector3d pc = _estimate.rotation * point + _estimate.translation;
-        pc = -pc / pc[2]; // normalize
+        pc = -pc / pc[2]; // normalize, [X/Z, Y/Z, 1]
+        // undistort
         double r2 = pc.squaredNorm();
         double distortion = 1.0 + r2 * (_estimate.k1 + _estimate.k2 * r2);
         return Eigen::Vector2d(_estimate.focal * distortion * pc[0], // undistorted u
@@ -83,6 +87,7 @@ public:
         _estimate = Eigen::Vector3d(0, 0, 0);
     }
 
+    // update
     virtual void oplusImpl(const double *update) override {
         _estimate += Eigen::Vector3d(update[0], update[1], update[2]);
     }
