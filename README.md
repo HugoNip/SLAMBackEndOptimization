@@ -62,5 +62,10 @@ make
 ./bundle_adjustment_g2o
 ```
 
+## Result
+![Screenshot%20from%202020-06-03%2010-06-00.png](https://github.com/HugoNip/SLAMBackEndOptimization/blob/master/results/Screenshot%20from%202020-06-03%2010-06-00.png)
+
+
+
 ## Reference
 [Source](https://github.com/HugoNip/slambook2/tree/master/ch9)
