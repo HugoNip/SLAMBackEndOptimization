@@ -84,7 +84,8 @@ inline void QuaternionToAngleAxis(const T *quaternion, T *angle_axis) {
     }
 }
 
-// Convert axis-angle to Rotation (P53)
+// Convert Axis-Angle to Rotation Matrix
+// Rodrigues's formula (P53)
 template<typename T>
 inline void AngleAxisRotatePoint(const T angle_axis[3], const T pt[3], T result[3]) {
     const T theta2 = DotProduct(angle_axis, angle_axis);
