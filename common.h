@@ -388,10 +388,19 @@ void BALProblem::CameraToAngleAxisAndCenter(const double *camera,
     } else {
         angle_axis_ref = ConstVectorRef(camera, 3);
     }
-    // got angle-axis, camera pose
+    // have got angle-axis, camera pose
 
-    // c = -R't
-    Eigen::VectorXd inverse_rotation = -angle_axis_ref;
+    /**
+     * c = -R't
+     * compute the center which is the camera center in global coordinate
+     * PW_center is camera coordinate in global coordinate
+     * PC_center is camera center coordinate (0, 0, 0) in camera coordinate
+     * PC_center = PW_center x R + t
+     * PW_center = -R't
+     * inverse angle-axis = -R't
+     */
+
+    Eigen::VectorXd inverse_rotation = -angle_axis_ref; // -R'
     AngleAxisRotatePoint(inverse_rotation.data(),
             camera + camera_block_size() - 6, // 9 - 6 = 3
             center);
@@ -408,25 +417,31 @@ void BALProblem::AngleAxisAndCenterToCamera(const double *angle_axis,
         VectorRef(camera, 3) = angle_axis_ref;
     }
 
-    // t = -R * t
+    /**
+     * PW_center×R+t=PC_center(0,0,0)
+     * t = -R * t
+     */
     AngleAxisRotatePoint(angle_axis, center, camera + camera_block_size() - 6);
     VectorRef(camera + camera_block_size() - 6, 3) *= -1.0;
 }
 
 void BALProblem::Normalize() {
     // compute the maginal median of the geometry
-    std::vector<double> tmp(num_points_);
+    std::vector<double> tmp(num_points_); // number of landmarks
     Eigen::Vector3d median;
     double *points = mutable_points();
+    // for each column, [X, Y, Z]
     for (int i = 0; i < 3; ++i) {
+        // read all data for each column
         for (int j = 0; j < num_points_; ++j) {
             tmp[j] = points[3 * j + i];
         }
-        median(i) = Median(&tmp);
+        median(i) = Median(&tmp); // get median for each column
     }
 
     for (int i = 0; i < num_points_; ++i) {
         VectorRef point(points + 3 * i, 3);
+        // sum all absolute value
         tmp[i] = (point - median).lpNorm<1>();
     }
 
@@ -441,7 +456,9 @@ void BALProblem::Normalize() {
         VectorRef point(points + 3 * i, 3);
         point = scale * (point - median);
     }
+    // finishing the processing landmarks
 
+    //
     double *cameras = mutable_cameras();
     double angle_axis[3];
     double center[3];
@@ -454,7 +471,7 @@ void BALProblem::Normalize() {
     }
 }
 
-// add random noise
+// add random noise for [rotation, translation, point]
 void BALProblem::Perturb(const double rotation_sigma,
                          const double translation_sigma,
                          const double point_sigma) {

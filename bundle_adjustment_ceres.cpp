@@ -13,9 +13,9 @@ int main (int argc, char** argv) {
     std::cout << "done 1" << std::endl;
     bal_problem.Normalize();
     bal_problem.Perturb(0.1, 0.5, 0.5);
-    bal_problem.WriteToPLYFile("../results/initial_ceres.ply");
-    SolveBA(bal_problem);
-    bal_problem.WriteToPLYFile("../results/final_ceres.ply");
+    bal_problem.WriteToPLYFile("../results/initial_ceres.ply"); // data with noise as initial data
+    SolveBA(bal_problem); // optimization
+    bal_problem.WriteToPLYFile("../results/final_ceres.ply"); // estimated data
 
     return 0;
 }
