@@ -1,5 +1,5 @@
 ## Introduction
-This project shows backend optimization in SLAM.
+This project shows backend optimization in SLAM. In details, it shows how to use g2o to solve the bundle adjustment (BA).
 ## Requirements
 
 ### Eigen Package (Version >= 3.0.0)
