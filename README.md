@@ -59,7 +59,7 @@ make
 
 ## Run
 ```
-./bundle_adjustment_g2o
+./build/bundle_adjustment_g2o
 ```
 
 ## Result
